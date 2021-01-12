@@ -1,0 +1,29 @@
+version: '3.6'
+
+services:
+
+  flask_api:
+    container_name: flask_api
+    build:
+      context: .
+      target: develop
+    ports:
+      - 5000:5000
+    environment:
+      - SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://postgres:postgres@postgres_db/master
+      - JWT_SECRET_KEY=YOUR_SECRET_KEY
+    volumes:
+      - ./migrations/versions:/usr/src/app/migrations/versions
+    depends_on:
+      - postgres_db
+
+  postgres_db:
+    container_name: "postgres"
+    image: postgres:9.6
+    environment:
+      - POSTGRES_DB=master
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - TZ=GMT
+    ports:
+      - 5432:5432
